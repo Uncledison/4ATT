@@ -6,6 +6,8 @@ import { comboOf } from '../data/combos'
 import { dynamicOf } from '../data/dynamics'
 import AnimalAvatar from '../components/AnimalAvatar'
 import QuadrantMap from '../components/QuadrantMap'
+import Footer from '../components/Footer'
+import { APP_URL, shareResult } from '../logic/kakao'
 
 interface Props {
   family: Family
@@ -180,9 +182,6 @@ function PairCompare({ members }: { members: Member[] }) {
   )
 }
 
-const APP_URL = 'https://fun.uncledison.com/4att/'
-const KAKAO_KEY = '8e68190d1ba932955a557fbf0ae0b659'
-
 export default function Report({ family, onRestart, onDashboard }: Props) {
   const members = family.members.filter((m) => m.result)
   const multi = members.length >= 2
@@ -194,21 +193,7 @@ export default function Report({ family, onRestart, onDashboard }: Props) {
   }
 
   const shareKakao = async () => {
-    const kakao = (window as unknown as { Kakao?: any }).Kakao
-    if (kakao) {
-      try {
-        if (!kakao.isInitialized()) kakao.init(KAKAO_KEY)
-        kakao.Share.sendDefault({
-          objectType: 'text',
-          text: `${summaryText()}\n\n우리 가족은 어떤 동물일까? 5분 가족 성격 검사`,
-          link: { mobileWebUrl: APP_URL, webUrl: APP_URL },
-          buttonTitle: '우리 가족도 검사하기',
-        })
-        return
-      } catch {
-        /* SDK 실패 시 일반 공유로 폴백 */
-      }
-    }
+    if (shareResult(summaryText())) return
     await share()
   }
 
@@ -285,6 +270,7 @@ export default function Report({ family, onRestart, onDashboard }: Props) {
         <br />
         자기이해와 가족 소통을 돕는 교육용 도구입니다.
       </p>
+      <Footer />
     </div>
   )
 }

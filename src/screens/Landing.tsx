@@ -1,4 +1,5 @@
 import AnimalAvatar from '../components/AnimalAvatar'
+import Footer from '../components/Footer'
 import { ANIMAL_ORDER } from '../types'
 
 interface Props {
@@ -48,6 +49,9 @@ export default function Landing({ hasSaved, onFamily, onSolo, onContinue }: Prop
       <p className="mt-8 max-w-xs text-xs leading-relaxed text-ink/45">
         본 검사는 심리 진단 도구가 아닌 자기이해와 가족 소통을 돕는 교육용 도구입니다.
       </p>
+      <div className="mt-4">
+        <Footer />
+      </div>
     </div>
   )
 }

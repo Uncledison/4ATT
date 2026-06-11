@@ -9,6 +9,7 @@ import Quiz from './screens/Quiz'
 import Teaser from './screens/Teaser'
 import Dashboard from './screens/Dashboard'
 import Report from './screens/Report'
+import FloatingKakao from './components/FloatingKakao'
 
 type Phase = 'landing' | 'setup' | 'turn' | 'quiz' | 'teaser' | 'dashboard' | 'report'
 
@@ -124,6 +125,8 @@ export default function App() {
       {!family && phase !== 'landing' && phase !== 'setup' && (
         <Landing hasSaved={false} onContinue={() => {}} onFamily={() => setPhase('setup')} onSolo={() => setPhase('setup')} />
       )}
+
+      {(phase === 'landing' || phase === 'dashboard' || phase === 'report') && <FloatingKakao />}
     </div>
   )
 }

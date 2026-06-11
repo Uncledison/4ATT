@@ -1,6 +1,7 @@
 import type { Family } from '../types'
 import { ANIMALS } from '../data/animals'
 import AnimalAvatar from '../components/AnimalAvatar'
+import Footer from '../components/Footer'
 
 interface Props {
   family: Family
@@ -68,6 +69,8 @@ export default function Dashboard({ family, onStartTurn, onReport, onRestart }: 
       >
         처음부터 다시 하기
       </button>
+
+      <Footer />
     </div>
   )
 }
