@@ -20,8 +20,11 @@ export interface Member {
   result?: Result
 }
 
+export type Depth = 'quick' | 'deep'
+
 export interface Family {
   members: Member[]
+  depth?: Depth
 }
 
 export const ANIMAL_ORDER: Animal[] = ['lion', 'dolphin', 'puppy', 'beaver']

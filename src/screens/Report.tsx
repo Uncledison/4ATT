@@ -15,6 +15,7 @@ interface Props {
 
 function ScoreBars({ member }: { member: Member }) {
   const scores = member.result!.scores
+  const n = ANIMAL_ORDER.reduce((sum, a) => sum + scores[a], 0) / 10
   return (
     <div className="mt-3 flex flex-col gap-1.5">
       {ANIMAL_ORDER.map((a) => (
@@ -23,7 +24,7 @@ function ScoreBars({ member }: { member: Member }) {
           <div className="h-4 flex-1 overflow-hidden rounded-full bg-cream">
             <div
               className="h-full rounded-full transition-all"
-              style={{ width: `${((scores[a] - 10) / 30) * 100}%`, background: ANIMALS[a].color }}
+              style={{ width: `${((scores[a] - n) / (3 * n)) * 100}%`, background: ANIMALS[a].color }}
             />
           </div>
           <span className="w-7 shrink-0 text-right text-[13px] text-ink/60">{scores[a]}</span>
@@ -179,14 +180,40 @@ function PairCompare({ members }: { members: Member[] }) {
   )
 }
 
+const APP_URL = 'https://fun.uncledison.com/4att/'
+const KAKAO_KEY = '8e68190d1ba932955a557fbf0ae0b659'
+
 export default function Report({ family, onRestart, onDashboard }: Props) {
   const members = family.members.filter((m) => m.result)
   const multi = members.length >= 2
   const [copied, setCopied] = useState(false)
 
-  const share = async () => {
+  const summaryText = () => {
     const lines = members.map((m) => `${m.name}: ${ANIMALS[m.result!.dominant].name} (${ANIMALS[m.result!.dominant].tagline})`)
-    const text = `🦁🐬🐶🦫 우리 가족 동물 유형 결과\n${lines.join('\n')}\n\n4ATT 가족 동물 성격 검사`
+    return `🦁🐬🐶🦫 우리 가족 동물 유형 결과\n${lines.join('\n')}`
+  }
+
+  const shareKakao = async () => {
+    const kakao = (window as unknown as { Kakao?: any }).Kakao
+    if (kakao) {
+      try {
+        if (!kakao.isInitialized()) kakao.init(KAKAO_KEY)
+        kakao.Share.sendDefault({
+          objectType: 'text',
+          text: `${summaryText()}\n\n우리 가족은 어떤 동물일까? 5분 가족 성격 검사`,
+          link: { mobileWebUrl: APP_URL, webUrl: APP_URL },
+          buttonTitle: '우리 가족도 검사하기',
+        })
+        return
+      } catch {
+        /* SDK 실패 시 일반 공유로 폴백 */
+      }
+    }
+    await share()
+  }
+
+  const share = async () => {
+    const text = `${summaryText()}\n\n${APP_URL}`
     try {
       if (navigator.share) {
         await navigator.share({ text })
@@ -237,8 +264,11 @@ export default function Report({ family, onRestart, onDashboard }: Props) {
       )}
 
       <div className="mt-8 flex flex-col gap-3">
+        <button onClick={shareKakao} className="btn-toy font-display w-full bg-[#FAE100] py-4 text-lg text-[#3C1E1E]">
+          💬 카카오톡으로 결과 보내기
+        </button>
         <button onClick={share} className="btn-toy font-display w-full bg-dolphin py-4 text-lg text-white">
-          {copied ? '복사 완료! 어디든 붙여넣으세요' : '결과 공유하기'}
+          {copied ? '복사 완료! 어디든 붙여넣으세요' : '다른 앱으로 공유 / 복사'}
         </button>
         <button
           onClick={() => {

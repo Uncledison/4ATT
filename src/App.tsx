@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { Animal, Family, Member } from './types'
+import type { Animal, Depth, Family, Member } from './types'
 import { loadState, saveState, clearState } from './logic/storage'
 import { scoreAnswers } from './logic/scoring'
 import Landing from './screens/Landing'
@@ -29,8 +29,8 @@ export default function App() {
 
   const turnMember = family?.members.find((m) => m.id === turnId) ?? null
 
-  const startMembers = (members: Member[]) => {
-    setFamily({ members })
+  const startMembers = (members: Member[], depth: Depth) => {
+    setFamily({ members, depth })
     if (members.length === 1) {
       setTurnId(members[0].id)
       setPhase('turn')
@@ -88,7 +88,12 @@ export default function App() {
       )}
 
       {phase === 'quiz' && turnMember && (
-        <Quiz member={turnMember} onDone={finishQuiz} onQuit={() => setPhase(solo ? 'turn' : 'dashboard')} />
+        <Quiz
+          member={turnMember}
+          depth={family?.depth ?? 'quick'}
+          onDone={finishQuiz}
+          onQuit={() => setPhase(solo ? 'turn' : 'dashboard')}
+        />
       )}
 
       {phase === 'teaser' && turnMember?.result && (

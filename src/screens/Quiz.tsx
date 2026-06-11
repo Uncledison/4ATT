@@ -1,21 +1,23 @@
 import { useState } from 'react'
-import type { Animal, Member } from '../types'
-import { QUESTIONS, shuffledAnimals, frame } from '../data/questions'
+import type { Animal, Depth, Member } from '../types'
+import { QUESTIONS, STRENGTH_COUNT, questionCount, shuffledAnimals, frame } from '../data/questions'
 
 interface Props {
   member: Member
+  depth: Depth
   onDone: (rankings: Animal[][]) => void
   onQuit: () => void
 }
 
 const RANK_LABEL = ['1순위 · 4점', '2순위 · 3점', '3순위 · 2점', '4순위 · 1점']
 
-export default function Quiz({ member, onDone, onQuit }: Props) {
+export default function Quiz({ member, depth, onDone, onQuit }: Props) {
   const [qIndex, setQIndex] = useState(0)
   const [rankings, setRankings] = useState<Animal[][]>([])
   const [picked, setPicked] = useState<Animal[]>([])
 
-  const total = QUESTIONS.length
+  const total = questionCount(depth)
+  const weakness = qIndex >= STRENGTH_COUNT
   const cards = shuffledAnimals(qIndex)
   const complete = picked.length === 4
 
@@ -68,11 +70,23 @@ export default function Quiz({ member, onDone, onQuit }: Props) {
       </div>
 
       <h2 className="font-display mt-6 text-xl leading-snug">
-        {member.mode === 'parentReport' ? '우리 아이와' : '나와'} 가까운 순서대로
-        <br />
-        카드를 눌러주세요
+        {weakness ? (
+          <>
+            이런 서툰 모습은 어때요?
+            <br />
+            가까운 순서대로 눌러주세요
+          </>
+        ) : (
+          <>
+            {member.mode === 'parentReport' ? '우리 아이와' : '나와'} 가까운 순서대로
+            <br />
+            카드를 눌러주세요
+          </>
+        )}
       </h2>
-      <p className="mt-1 text-[13px] text-ink/50">가장 비슷한 모습부터 1 → 4 순서로! 다시 누르면 취소돼요.</p>
+      <p className="mt-1 text-[13px] text-ink/50">
+        {weakness ? '누구나 서툰 모습이 있어요. 솔직할수록 정확해져요!' : '가장 비슷한 모습부터 1 → 4 순서로! 다시 누르면 취소돼요.'}
+      </p>
 
       <div key={qIndex} className="mt-5 flex flex-1 flex-col gap-3">
         {cards.map((animal, i) => {

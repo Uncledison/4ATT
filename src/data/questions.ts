@@ -1,4 +1,4 @@
-import type { Animal, TestMode } from '../types'
+import type { Animal, Depth, TestMode } from '../types'
 
 export const QUESTIONS: Record<Animal, string>[] = [
   {
@@ -61,7 +61,73 @@ export const QUESTIONS: Record<Animal, string>[] = [
     puppy: '모두가 사이좋게 지내는 게 제일 좋아요',
     beaver: '왜 그런지 이유를 차근차근 따져봐요',
   },
+  {
+    lion: '뜻대로 안 되면 무척 답답해해요',
+    dolphin: '말이 많고 가만히 있기 힘들어해요',
+    puppy: '싫다는 말을 잘 못해요',
+    beaver: '작은 실수도 그냥 넘기기 어려워해요',
+  },
+  {
+    lion: '기다리는 걸 잘 못 참아요',
+    dolphin: '정리정돈이 잘 안 돼요',
+    puppy: '결정을 잘 못 내리고 망설여요',
+    beaver: '걱정이 많고 매사에 조심스러워요',
+  },
+  {
+    lion: '지시받는 걸 싫어해요',
+    dolphin: '한 가지에 오래 집중하기 어려워해요',
+    puppy: '변화가 생기면 불안해해요',
+    beaver: '웬만해선 쉽게 만족하지 못해요',
+  },
+  {
+    lion: '이기려고 우기다가 다투기도 해요',
+    dolphin: '약속이나 할 일을 깜빡 잊어요',
+    puppy: '다른 사람 눈치를 많이 봐요',
+    beaver: '결정하기 전에 너무 오래 고민해요',
+  },
+  {
+    lion: '다른 사람 말을 끝까지 안 듣기도 해요',
+    dolphin: '재미없으면 금방 흥미를 잃어요',
+    puppy: '상처받아도 말 못 하고 혼자 삭여요',
+    beaver: '잘한 점보다 틀린 점이 먼저 보여요',
+  },
+  {
+    lion: '고집이 세다는 말을 들어요',
+    dolphin: '즉흥적으로 일을 벌여놓곤 해요',
+    puppy: '부탁을 거절하지 못해 손해 보기도 해요',
+    beaver: '계획이 틀어지면 크게 스트레스 받아요',
+  },
+  {
+    lion: '명령하듯 말할 때가 있어요',
+    dolphin: '진지한 이야기를 오래 하기 힘들어해요',
+    puppy: '늘 자신을 뒤로 미루고 양보만 해요',
+    beaver: '융통성이 부족하다는 말을 들어요',
+  },
+  {
+    lion: '급하게 결정해서 후회하기도 해요',
+    dolphin: '인정받지 못하면 금방 시무룩해져요',
+    puppy: '갈등이 생기면 피하고 싶어해요',
+    beaver: '다른 사람에게도 높은 기준을 요구해요',
+  },
+  {
+    lion: '약한 모습을 보이기 싫어해요',
+    dolphin: '심심한 걸 가장 못 견뎌요',
+    puppy: '새로운 도전 앞에서 머뭇거려요',
+    beaver: '도움을 청하지 않고 혼자 끙끙대요',
+  },
+  {
+    lion: '미안하다는 말이 잘 안 나와요',
+    dolphin: '기분에 따라 행동이 확 달라져요',
+    puppy: '하고 싶은 말이 있어도 그냥 따라가요',
+    beaver: '재미보다 규칙이 먼저예요',
+  },
 ]
+
+export const STRENGTH_COUNT = 10
+
+export function questionCount(depth: Depth): number {
+  return depth === 'deep' ? QUESTIONS.length : STRENGTH_COUNT
+}
 
 const PERMS: number[][] = [
   [0, 1, 2, 3],

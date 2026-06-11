@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Member, Role, TestMode } from '../types'
+import type { Depth, Member, Role, TestMode } from '../types'
 import { uid } from '../logic/storage'
 
 interface Draft {
@@ -14,10 +14,11 @@ const ROLES: Role[] = ['엄마', '아빠', '자녀', '기타']
 interface Props {
   solo: boolean
   onBack: () => void
-  onStart: (members: Member[]) => void
+  onStart: (members: Member[], depth: Depth) => void
 }
 
 export default function Setup({ solo, onBack, onStart }: Props) {
+  const [depth, setDepth] = useState<Depth>('quick')
   const [drafts, setDrafts] = useState<Draft[]>(
     solo
       ? [{ id: uid(), name: '', role: '기타', mode: 'self' }]
@@ -111,8 +112,30 @@ export default function Setup({ solo, onBack, onStart }: Props) {
         </button>
       )}
 
+      <h3 className="font-display mt-7 text-lg">어떤 검사로 할까요?</h3>
+      <div className="mt-2 flex gap-2">
+        <button
+          onClick={() => setDepth('quick')}
+          className={`flex-1 rounded-2xl border-2 p-3 text-left transition ${
+            depth === 'quick' ? 'border-lion bg-lion-soft' : 'border-ink/10 bg-card'
+          }`}
+        >
+          <span className="font-display block text-base">⚡ 빠른 검사</span>
+          <span className="mt-0.5 block text-xs text-ink/55">10문항 · 1인당 약 5분</span>
+        </button>
+        <button
+          onClick={() => setDepth('deep')}
+          className={`flex-1 rounded-2xl border-2 p-3 text-left transition ${
+            depth === 'deep' ? 'border-lion bg-lion-soft' : 'border-ink/10 bg-card'
+          }`}
+        >
+          <span className="font-display block text-base">🔍 정밀 검사</span>
+          <span className="mt-0.5 block text-xs text-ink/55">20문항(강점+아쉬운 모습) · 약 10분</span>
+        </button>
+      </div>
+
       <button
-        onClick={() => valid && onStart(drafts.map(({ id, name, role, mode }) => ({ id, name: name.trim(), role, mode })))}
+        onClick={() => valid && onStart(drafts.map(({ id, name, role, mode }) => ({ id, name: name.trim(), role, mode })), depth)}
         disabled={!valid}
         className="btn-toy font-display mt-8 w-full bg-lion py-4 text-lg text-white disabled:opacity-40"
       >
