@@ -9,11 +9,18 @@ import Quiz from './screens/Quiz'
 import Teaser from './screens/Teaser'
 import Dashboard from './screens/Dashboard'
 import Report from './screens/Report'
+import SharedResult from './screens/SharedResult'
 import FloatingKakao from './components/FloatingKakao'
+import { decodePayload, type SharedPayload } from './logic/share'
 
 type Phase = 'landing' | 'setup' | 'turn' | 'quiz' | 'teaser' | 'dashboard' | 'report'
 
 const saved = loadState()
+
+function readSharedHash(): SharedPayload | null {
+  const h = window.location.hash
+  return h.startsWith('#r=') ? decodePayload(h.slice(3)) : null
+}
 
 export default function App() {
   const [family, setFamily] = useState<Family | null>(saved?.family ?? null)
@@ -23,6 +30,7 @@ export default function App() {
   })
   const [turnId, setTurnId] = useState<string | null>(saved?.turnId ?? null)
   const [solo, setSolo] = useState(saved?.family?.members.length === 1)
+  const [shared, setShared] = useState<SharedPayload | null>(readSharedHash)
 
   useEffect(() => {
     saveState({ family, phase, turnId })
@@ -58,6 +66,22 @@ export default function App() {
   }
 
   const remaining = family ? family.members.filter((m) => !m.result).length : 0
+
+  if (shared) {
+    return (
+      <div className="mx-auto min-h-dvh w-full max-w-[430px] bg-cream shadow-[0_0_40px_rgba(58,46,37,0.12)]">
+        <SharedResult
+          payload={shared}
+          onStart={() => {
+            window.history.replaceState(null, '', window.location.pathname + window.location.search)
+            setShared(null)
+            setPhase(family ? 'dashboard' : 'landing')
+          }}
+        />
+        <FloatingKakao />
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto min-h-dvh w-full max-w-[430px] bg-cream shadow-[0_0_40px_rgba(58,46,37,0.12)]">

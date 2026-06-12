@@ -7,7 +7,8 @@ import { dynamicOf } from '../data/dynamics'
 import AnimalAvatar from '../components/AnimalAvatar'
 import QuadrantMap from '../components/QuadrantMap'
 import Footer from '../components/Footer'
-import { APP_URL, shareResult } from '../logic/kakao'
+import { APP_URL, shareFamilyResult, shareMemberResult } from '../logic/kakao'
+import { scoresToArray, type SharedPayload } from '../logic/share'
 
 interface Props {
   family: Family
@@ -102,6 +103,19 @@ function MemberDetail({ member }: { member: Member }) {
             <p className="font-display text-[15px]">💬 {member.name}에게 말 걸 때는</p>
             <p className="mt-1 text-ink/75">{meta.talk}</p>
           </div>
+
+          <button
+            onClick={() =>
+              shareMemberResult(member.name, result.dominant, {
+                v: 1,
+                t: 'm',
+                m: [{ n: member.name, s: scoresToArray(result.scores) }],
+              })
+            }
+            className="btn-toy font-display mt-4 w-full bg-[#FAE100] py-3 text-[15px] text-[#3C1E1E]"
+          >
+            💬 {member.name}의 결과 카톡으로 공유
+          </button>
         </div>
       )}
     </div>
@@ -193,7 +207,13 @@ export default function Report({ family, onRestart, onDashboard }: Props) {
   }
 
   const shareKakao = async () => {
-    if (shareResult(summaryText())) return
+    const payload: SharedPayload = {
+      v: 1,
+      t: 'f',
+      m: members.map((m) => ({ n: m.name, s: scoresToArray(m.result!.scores) })),
+    }
+    const summary = members.map((m) => `${m.name}: ${ANIMALS[m.result!.dominant].name}`).join(' · ')
+    if (shareFamilyResult(summary, payload)) return
     await share()
   }
 
