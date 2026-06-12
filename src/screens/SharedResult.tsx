@@ -6,6 +6,7 @@ import { SHARE_SUBTITLE } from '../logic/kakao'
 import { arrayToScores, dominantOf, type SharedPayload } from '../logic/share'
 import AnimalAvatar from '../components/AnimalAvatar'
 import QuadrantMap from '../components/QuadrantMap'
+import PairCompare from '../components/PairCompare'
 import Footer from '../components/Footer'
 
 interface Props {
@@ -126,6 +127,16 @@ export default function SharedResult({ payload, onStart }: Props) {
               )
             })}
           </div>
+
+          {members.length >= 2 && (
+            <>
+              <h3 className="font-display mt-7 text-xl">둘이 만나면? — 동상이몽 비교</h3>
+              <p className="mt-1 text-sm text-ink/60">두 사람을 골라 관계의 비밀을 알아보세요.</p>
+              <div className="mt-3">
+                <PairCompare members={members} />
+              </div>
+            </>
+          )}
         </div>
       )}
 
