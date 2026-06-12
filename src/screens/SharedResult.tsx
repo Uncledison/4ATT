@@ -62,6 +62,11 @@ export default function SharedResult({ payload, onStart }: Props) {
             {firstMeta.name}!
           </h2>
           <p className="mt-1 text-[15px] text-ink/70">{SHARE_SUBTITLE[first.result!.dominant]}</p>
+          {first.result!.tie && (
+            <p className="mx-auto mt-2 inline-block rounded-xl bg-card px-4 py-2 text-[13px] text-ink/60">
+              네 기질이 고르게 나온 복합 유형이에요 — {ANIMALS[first.result!.sub].name} 기질도 똑같이 강해요!
+            </p>
+          )}
 
           <div className="mt-6 rounded-2xl border-2 border-ink/10 bg-card p-4 text-left">
             <p className="font-display text-[15px]">📊 점수 분포</p>
@@ -111,10 +116,12 @@ export default function SharedResult({ payload, onStart }: Props) {
                       <p className="font-display text-lg leading-tight">{m.name}</p>
                       <p className="text-[13px] text-ink/60">
                         {meta.name} — {SHARE_SUBTITLE[m.result!.dominant]}
+                        {m.result!.tie && <span className="text-ink/45"> · 복합 유형</span>}
                       </p>
                     </div>
                   </div>
                   <Bars scores={m.result!.scores} />
+                  <p className="mt-2 text-[13px] text-ink/65">💪 {meta.strengths.slice(0, 2).join(' · ')}</p>
                 </div>
               )
             })}

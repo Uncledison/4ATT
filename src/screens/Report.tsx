@@ -207,13 +207,23 @@ export default function Report({ family, onRestart, onDashboard }: Props) {
   }
 
   const shareKakao = async () => {
-    const payload: SharedPayload = {
-      v: 1,
-      t: 'f',
-      m: members.map((m) => ({ n: m.name, s: scoresToArray(m.result!.scores) })),
+    if (members.length === 1) {
+      const m = members[0]
+      const ok = shareMemberResult(m.name, m.result!.dominant, {
+        v: 1,
+        t: 'm',
+        m: [{ n: m.name, s: scoresToArray(m.result!.scores) }],
+      })
+      if (ok) return
+    } else {
+      const payload: SharedPayload = {
+        v: 1,
+        t: 'f',
+        m: members.map((m) => ({ n: m.name, s: scoresToArray(m.result!.scores) })),
+      }
+      const summary = members.map((m) => `${m.name}: ${ANIMALS[m.result!.dominant].name}`).join(' · ')
+      if (shareFamilyResult(summary, payload)) return
     }
-    const summary = members.map((m) => `${m.name}: ${ANIMALS[m.result!.dominant].name}`).join(' · ')
-    if (shareFamilyResult(summary, payload)) return
     await share()
   }
 
